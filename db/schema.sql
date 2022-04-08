@@ -8,21 +8,29 @@ USE company_db;
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     dept_name VARCHAR(30) NOT NULL
-)
+);
 
 -- Create a table for the roles
 CREATE TABLE roles (
     id INT NOT AUTO_INCREMENT NULL PRIMARY KEY,
     title VARCHAR(30),
-    salary DECIMAL(),
-    dept_id INT
-)
+    salary DECIMAL NOT NULL,
+    FOREIGN KEY (department_id)
+        REFERENCES department(id)
+        ON DELETE SET NULL
+);
 
 -- Create a table for the employees
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    role_id INT NOT NUll,
-    manager_id INT 
-)
+    role_id INT,
+    FOREIGN Key (roles_id)
+        REFERENCES roles(id)
+        ON DELETE SET NULL,
+    manager_id INT,
+    FOREIGN KEY (manager_id)
+        REFERENCES employee(id),
+        ON DELETE SET NULL
+);
