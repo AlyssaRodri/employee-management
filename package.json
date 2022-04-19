@@ -1,7 +1,25 @@
 {
   "dependencies": {
     "console.table": "^0.10.0",
+    "express": "^4.17.3",
     "inquirer": "^8.2.2",
     "mysql2": "^2.3.3"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "employee-management",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlyssaRodri/employee-management.git"
+  },
+  "author": "Alyssa Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlyssaRodri/employee-management/issues"
+  },
+  "homepage": "https://github.com/AlyssaRodri/employee-management#readme"
 }
