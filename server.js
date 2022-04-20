@@ -9,8 +9,8 @@ const { query } = require('express');
 const questions = () => {
   inquirer.prompt([
     {
-      type: "List",
-      name: "Task",
+      type: "list",
+      name: "task",
       message: "What would you like to do?",
       choices: [
         "View All Departments",
@@ -23,31 +23,32 @@ const questions = () => {
         "Quit",
     ]
     }
-  ]).then((res) => {
-      if(res.options === "View All Departments"){
+  ]).then( function(res) {
+      if(res.task === "View All Departments"){
         //display the department table
-        viewDept();
-      } else if (res.options === "View All Roles"){
+        //console.log(testing) <= Testing to make sure that this part of the code was working
+          viewDept();
+      } else if (res.task === "View All Roles"){
         //display the roles table
-        viewRoles();
-      } else if (res.options === "View All Employees"){
+        console.log("testing")
+          viewRoles();
+      } else if (res.task === "View All Employees"){
         //display the employees table
-        viewEmp();
-      } else if (res.options === "Add a Department"){
+          viewEmp();
+      } else if (res.task === "Add a Department"){
         //add a department function
-        addDept();
-      } else if (res.options === "Add a Role"){
+          addDept();
+      } else if (res.task === "Add a Role"){
         //add a role function
-        addRole();
-      } else if (res.options === "Add an Employee"){
+          addRole();
+      } else if (res.task === "Add an Employee"){
         //add an employee function
-        addEmp();
-      } else if (res.options === "Update an Employee Role"){
+          addEmp();
+      } else if (res.task === "Update an Employee Role"){
         //Update an employee function
-        updateEmpRole();
-      } else {
-        //Quit 
-        endQuestions();
+          updateEmpRole();
+      } else if (res.task === "Quit"){
+          endQuestions();
       }
   })
 }
@@ -69,39 +70,34 @@ const db = mysql.createConnection(
     password: 'potato',
     database: 'company_db'
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`Connected to the company_db database.`)
 );
 
-async function viewDept(){
-  await query("SELECT * FROM department", (error, result) => {
+function viewDept(){
+  db.query("SELECT * FROM department", (error, result) => {
     try {
-      console.log("\n");
       console.table(result);
-      console.log("\n");
+      // console.log(result)
     } catch (error) {
       console.log(error);
     }
-    //Return to original questions
-    questions();
   });
 }
 
 
-async function viewRoles(){
-  await query("SELECT * FROM roles", (error, result) => {
+function viewRoles(){
+  db.query("SELECT * FROM role", (error, result) => {
     try {
-      console.log("\n");
-      console.table(result);
-      console.log("\n");
-    } catch (error) {
-      console.log(error);
+      // console.log("testing2")
+      console.table(result)
+    }catch (error) {
+      console.log(error)
     }
-    questions();
   });
 }
 
-async function viewEmp(){
-  await query("SELECT * FROM employee", (error, result) => {
+function viewEmp(){
+  db.query("SELECT * FROM employee", (error, result) => {
     try {
       console.log("\n");
       console.table(result);
@@ -109,7 +105,6 @@ async function viewEmp(){
     } catch (error) {
       console.log(error);
     }
-    questions();
   });
 }
 
@@ -131,7 +126,7 @@ async function addDept() {
       console.log(`Successfully added new department: ${result.dept}.`);
       
   })
-  questions();
+
 }
 
 async function addRole(){
@@ -259,15 +254,18 @@ async function updateEmpRole(){
   questions();
 }
 
-const endQuestions = () => {
-  console.log("You have ended the program!")
+const endQuestions = () =>{
+  inquirer
+      .prompt([
+        {
+          name: "moreQuery",
+          type: "confirm",
+          message: "Are you finished?",
+        },
+      ])
+      .then((answer) => {
+        if (answer.moreQuery) return questions();
+      });
 }
 
-// Default response for any other request (Not Found)
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+questions();
