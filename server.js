@@ -112,20 +112,17 @@ function addDept() {
   inquirer.prompt([
     {
       type: "input",
-      name: "dept_name",
+      name: "department_name",
       message: "What is the name of the new department?",
     }
   ]).then((response) => {
-    const query = 'INSERT INTO departments (name) VALUES (?)'
-    db.query(query, response.department, (err, results) => {
-        try{
-            const lowercaseRes = response.department.toLowerCase();
-            console.log(`You have successfully added ${lowercaseRes} to your department table`)
-        }catch {
-            console.log(err);
-      }
+    console.log(response)
+    const query = 'INSERT INTO department (dept_name) VALUES (?)'
+    db.query(query, response.department_name, (err, results) => {
+      console.log("Success.")
+      viewDept()
+      })
     })
-  })
 }
 
 async function addRole() {
