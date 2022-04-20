@@ -112,21 +112,20 @@ async function addDept() {
   const result = await inquirer.prompt([
       {
           type: "input",
-          name: "dept",
+          name: "dept_name",
           message: "What is the name of the new department?",   
       }
-  ]);
-
-  const query = 'INSERT INTO department (name) VALUES (?)';
-
-  db.query(query, result.dept, (err, results) => {
-
-      if(err) throw err;
-      
-      console.log(`Successfully added new department: ${result.dept}.`);
-      
-  })
-
+  ]).then( (result) => {
+      console.log(result)
+      newQuery = "INSERT INTO department (dept_name) VALUES (?)"
+      db.query(newQuery, result.dept_name, (err, results) => {
+        try {
+          
+        } catch (error) {
+          
+        }
+      })
+    })
 }
 
 async function addRole(){
