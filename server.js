@@ -1,7 +1,7 @@
 const cTable = require('console.table');
 const Inquirer = require("inquirer");
 const mysql = require("mysql2");
-const express = require("express"); 
+const express = require("express");
 const inquirer = require('inquirer');
 const { query } = require('express');
 
@@ -21,35 +21,35 @@ const questions = () => {
         "Add an Employee",
         "Update an Employee Role",
         "Quit",
-    ]
+      ]
     }
-  ]).then( function(res) {
-      if(res.task === "View All Departments"){
-        //display the department table
-        //console.log(testing) <= Testing to make sure that this part of the code was working
-          viewDept();
-      } else if (res.task === "View All Roles"){
-        //display the roles table
-        console.log("testing")
-          viewRoles();
-      } else if (res.task === "View All Employees"){
-        //display the employees table
-          viewEmp();
-      } else if (res.task === "Add a Department"){
-        //add a department function
-          addDept();
-      } else if (res.task === "Add a Role"){
-        //add a role function
-          addRole();
-      } else if (res.task === "Add an Employee"){
-        //add an employee function
-          addEmp();
-      } else if (res.task === "Update an Employee Role"){
-        //Update an employee function
-          updateEmpRole();
-      } else if (res.task === "Quit"){
-          endQuestions();
-      }
+  ]).then(function (res) {
+    if (res.task === "View All Departments") {
+      //display the department table
+      //console.log(testing) <= Testing to make sure that this part of the code was working
+      viewDept();
+    } else if (res.task === "View All Roles") {
+      //display the roles table
+      console.log("testing")
+      viewRoles();
+    } else if (res.task === "View All Employees") {
+      //display the employees table
+      viewEmp();
+    } else if (res.task === "Add a Department") {
+      //add a department function
+      addDept();
+    } else if (res.task === "Add a Role") {
+      //add a role function
+      addRole();
+    } else if (res.task === "Add an Employee") {
+      //add an employee function
+      addEmp();
+    } else if (res.task === "Update an Employee Role") {
+      //Update an employee function
+      updateEmpRole();
+    } else if (res.task === "Quit") {
+      endQuestions();
+    }
   })
 }
 
@@ -73,7 +73,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`)
 );
 
-function viewDept(){
+function viewDept() {
   db.query("SELECT * FROM department", (error, result) => {
     try {
       console.table(result);
@@ -85,18 +85,18 @@ function viewDept(){
 }
 
 
-function viewRoles(){
+function viewRoles() {
   db.query("SELECT * FROM role", (error, result) => {
     try {
       // console.log("testing2")
       console.table(result)
-    }catch (error) {
+    } catch (error) {
       console.log(error)
     }
   });
 }
 
-function viewEmp(){
+function viewEmp() {
   db.query("SELECT * FROM employee", (error, result) => {
     try {
       console.log("\n");
@@ -108,27 +108,27 @@ function viewEmp(){
   });
 }
 
-async function addDept() {
-  const result = await inquirer.prompt([
-      {
-          type: "input",
-          name: "dept_name",
-          message: "What is the name of the new department?",   
+function addDept() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "dept_name",
+      message: "What is the name of the new department?",
+    }
+  ]).then((response) => {
+    const query = 'INSERT INTO departments (name) VALUES (?)'
+    db.query(query, response.department, (err, results) => {
+        try{
+            const lowercaseRes = response.department.toLowerCase();
+            console.log(`You have successfully added ${lowercaseRes} to your department table`)
+        }catch {
+            console.log(err);
       }
-  ]).then( (result) => {
-      console.log(result)
-      newQuery = "INSERT INTO department (dept_name) VALUES (?)"
-      db.query(newQuery, result.dept_name, (err, results) => {
-        try {
-          
-        } catch (error) {
-          
-        }
-      })
     })
+  })
 }
 
-async function addRole(){
+async function addRole() {
   const result = await inquirer.prompt([
     {
       type: "input",
@@ -143,7 +143,7 @@ async function addRole(){
   ])
   const getDept = "SELECT * FROM department"
   const getResults = await db.promise().query(getDept);
-  const department = getResults[0].map(({ id, name }) => ({value: id, name: name}));
+  const department = getResults[0].map(({ id, name }) => ({ value: id, name: name }));
 
   const chooseDept = await inquirer.prompt([
     {
@@ -164,7 +164,7 @@ async function addRole(){
   questions();
 }
 
-async function addEmp(){
+async function addEmp() {
   const result = await inquirer.prompt([
     {
       type: "input",
@@ -179,7 +179,7 @@ async function addEmp(){
   ])
 
   const rolesResult = await db.promise().query("SELECT id, title FROM role");
-  const roles = rolesResult[0].map(({ id, title }) => ({value: id, name: name}));
+  const roles = rolesResult[0].map(({ id, title }) => ({ value: id, name: name }));
 
   const askRole = await inquirer.prompt([
     {
@@ -191,34 +191,34 @@ async function addEmp(){
   ])
 
   const setManager = await db.promise().query('SELECT first_name, last_name, manager_id FROM employee');
-    const managers = setManager[0].map(({ first_name, last_name, manager_id }) => ({ value: manager_id, name: `${first_name} ${last_name}` }))
+  const managers = setManager[0].map(({ first_name, last_name, manager_id }) => ({ value: manager_id, name: `${first_name} ${last_name}` }))
 
-    // Add the option to select no manager, will return null
-    managers.push({value: null, name: 'None'})
+  // Add the option to select no manager, will return null
+  managers.push({ value: null, name: 'None' })
 
-    const askManager = await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'manager',
-            message: "Who is the employee's manager?",
-            choices: managers
-        }
-    ])
+  const askManager = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'manager',
+      message: "Who is the employee's manager?",
+      choices: managers
+    }
+  ])
 
-    const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
 
-    db.query(query, [result.first, result.last, askRole.role, askManager.manager], (err, results) => {
+  db.query(query, [result.first, result.last, askRole.role, askManager.manager], (err, results) => {
 
-        if(err) throw err;
-  
-        console.log(`Successfully added new employee: ${result.first} ${result.last}.`);
-        viewEmployees();
-        
-    })
+    if (err) throw err;
+
+    console.log(`Successfully added new employee: ${result.first} ${result.last}.`);
+    viewEmployees();
+
+  })
   questions();
 }
 
-async function updateEmpRole(){
+async function updateEmpRole() {
   const getEmployees = await db.promise().query("SELECT * FROM employees");
   const employees = employeeResults[0].map(({ id, first_name, last_name }) => ({ value: id, name: `${first_name} ${last_name}` }))
 
@@ -227,44 +227,44 @@ async function updateEmpRole(){
 
 
   const result = await inquirer.prompt([
-      {
-          type: 'list',
-          name: 'employee',
-          message: "Which employee's role do you want to update?",
-          choices: employees
-      },
-      {
-          type: 'list',
-          name: 'role',
-          message: "Which role do you want to assign the selected employee?",
-          choices: roles
-      },
+    {
+      type: 'list',
+      name: 'employee',
+      message: "Which employee's role do you want to update?",
+      choices: employees
+    },
+    {
+      type: 'list',
+      name: 'role',
+      message: "Which role do you want to assign the selected employee?",
+      choices: roles
+    },
 
   ])
 
   const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
   db.query(query, [result.role, result.employee], (err, results) => {
 
-      if(err) throw err;
-     
-      console.log('Successfully updated role!');
-      
+    if (err) throw err;
+
+    console.log('Successfully updated role!');
+
   })
   questions();
 }
 
-const endQuestions = () =>{
+const endQuestions = () => {
   inquirer
-      .prompt([
-        {
-          name: "moreQuery",
-          type: "confirm",
-          message: "Are you finished?",
-        },
-      ])
-      .then((answer) => {
-        if (answer.moreQuery) return questions();
-      });
+    .prompt([
+      {
+        name: "moreQuery",
+        type: "confirm",
+        message: "Are you finished?",
+      },
+    ])
+    .then((answer) => {
+      if (answer.moreQuery) return questions();
+    });
 }
 
 questions();
