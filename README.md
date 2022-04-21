@@ -37,6 +37,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 4. Your program should be up and running!
 
 ## Video
+[![Watch the video]](https://youtu.be/xRkpBydiYtg)
 
 ## Credits
 - console.table
