@@ -126,11 +126,11 @@ function addDept() {
 }
 
 async function addRole() {
-  const result = await inquirer.prompt([
+  const roleResults = await inquirer.prompt([
     {
       type: "input",
       name: "title",
-      message: "What is the name of the role?"
+      message: "What is the name of the new role?"
     },
     {
       type: "input",
@@ -138,27 +138,32 @@ async function addRole() {
       message: "How much is the salary for the new role?"
     },
   ])
-  const getDept = "SELECT * FROM department"
-  const getResults = await db.promise().query(getDept);
-  const department = getResults[0].map(({ id, name }) => ({ value: id, name: name }));
+  //Create a query to get all of the data bases for the next question
+  const deptQuery = "SELECT id, dept_name FROM department"    
+  const queryResults = await db.promise().query(deptQuery)
+  // console.log(queryResults)
+  // const deptList = Object.values(queryResults)
+  const deptList = queryResults[0].map(({ id, dept_name }) => ({value: id, name: dept_name}));
+  // console.log(deptList)
 
-  const chooseDept = await inquirer.prompt([
+  const askDept = await inquirer.prompt([
     {
-      type: "list",
-      name: "roleDepartment",
-      message: "Which department does this role belong to?",
-      choices: department
+      type: 'list',
+      name: "dept",
+      message: "Which department does this new role belong to?",
+      choices: deptList
     }
   ])
-  const query = "INSERT INTO roles (title, salary, departmend_id) VALUES (?, ?, ?)";
-  db.query(query, [result.title, result.salary, chooseDept.roleDepartment], (err, results) => {
-    try {
-      console.log(`You have successfully added ${result.title}.`)
-    } catch {
-      console.log(err)
-    }
-  })
-  questions();
+  try {
+    const insertQuery = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)"
+    console.log(roleResults.title, roleResults.salary, askDept.dept)
+    db.query(insertQuery, [roleResults.title, roleResults.salary, askDept.dept])  
+    console.log("Success.")
+    viewRoles()
+  } catch (error) {
+    console.log(error)
+  }
+       
 }
 
 async function addEmp() {
