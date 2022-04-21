@@ -117,7 +117,7 @@ function addDept() {
       message: "What is the name of the new department?",
     }
   ]).then((response) => {
-    console.log(response)
+    // console.log(response)
     const query = 'INSERT INTO department (dept_name) VALUES (?)'
     db.query(query, response.department_name, (err, results) => {
       console.log("Success.")
@@ -213,7 +213,7 @@ async function addEmp() {
   try {
     console.log(empName.first_name, empName.last_name, askRole.role, askManager.manager)
     const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
-    db.query(query, [empName.first_name, empName.last_name, askRole.role, askManager.manager], (err, results))
+    db.query(query, [empName.first_name, empName.last_name, askRole.role, askManager.manager])
     viewEmp()
   } catch (error) {
     console.log(error)
